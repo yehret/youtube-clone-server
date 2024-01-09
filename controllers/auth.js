@@ -10,8 +10,7 @@ export const signup = async (req, res) => {
 
       await newUser.save()
       res.status(200).send("User has been created")
-      console.log("success?");
    } catch (error) {
-      
+      res.status(500).send(error.message)
    }
 }
