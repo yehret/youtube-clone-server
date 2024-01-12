@@ -1,5 +1,6 @@
 import { createError } from "../error.js"
 import Video from "../models/Video.js"
+import User from "../models/User.js"
 
 export const addVideo = async (req, res, next) => {
    const newVideo = new Video({userId: req.user.id, ...req.body})
@@ -89,17 +90,17 @@ export const trend = async (req, res, next) => {
 
 export const sub = async (req, res, next) => {
    try {
-      const user = await User.findById(req.user.id)
-      const subscribedChannels = user.subscribedUsers;
-
-      const list = Promise.all(
-         subscribedChannels.map(channelId => {
-            return Video.find({user: channelId})
-         })
-      )
-
-      res.status(200).json(list)
-   } catch (error) {
-      next(error)
+     const user = await User.findById(req.user.id);
+     const subscribedChannels = user.subscribedUsers;
+ 
+     const list = await Promise.all(
+       subscribedChannels.map(async (channelId) => {
+         return await Video.find({ userId: channelId });
+       })
+     );
+ 
+     res.status(200).json(list.flat().sort((a, b) => b.createdAt - a.createdAt));
+   } catch (err) {
+     next(err);
    }
-}
+ };
