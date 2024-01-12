@@ -1,5 +1,6 @@
 import express from "express";
 import { addVideo, deleteVideo, getVideo, updateVideo } from "../controllers/video.js";
+import { verifyToken } from "../verifyToken.js";
 
 const router = express.Router();
 
